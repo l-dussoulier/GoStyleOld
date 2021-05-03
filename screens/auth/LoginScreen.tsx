@@ -1,18 +1,44 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
+import axios from 'axios';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { StyleSheet,View,Button,TextInput,TouchableOpacity,Text} from "react-native";
+import { StyleSheet,View,Button,TextInput,TouchableOpacity,Text, Alert} from "react-native";
 import Navigation from '../../navigation';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // @ts-ignore
 export default function LoginScreen({ navigation }) {
 
 
-
-
   let state = {
+    adressRequest: 'http://192.168.1.81:8080',
     username: '',
-    password: ''
+    password: '',
+    connexion: false,
+    textError: ""
+  }
+
+  const storeData = async (value: string) => {
+    try {
+      await AsyncStorage.setItem('@id', value)
+    } catch (e) {
+      // saving error
+      console.error(e);
+    }
+  }
+
+  const getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@id')
+      if(value !== null) {
+        // value previously stored
+        console.log(value);
+        console.log("yets");
+      }
+    } catch(e) {
+      // error reading value
+      console.error(e);
+    }
   }
 
 
@@ -32,18 +58,36 @@ export default function LoginScreen({ navigation }) {
 
   }
 
+  const requestLogin = async () => {
+    try {
+      const response =  await axios.post(state.adressRequest+'/Login', {username: state.username, password: state.password});
+      if (response.data != "Nom utilisateur ou mot de passe incorrect"){
+        //storeData(response.data.id);
+        state.connexion = true;
+
+      }
+    }catch (err){
+      console.error(err);
+    }
+  };
+
 
   function _connexion() {
+    state.connexion = false;
     var user = state.username;
     var password = state.password;
-    console.log(user);
-    console.log(password);
-   // if (user == 't' && password == 't'){
-      console.log('connecté');
-      navigation.navigate('Home');
-    //}else{
-      //console.log('mauvais mdp');
-   // }
+    requestLogin();
+    setTimeout(function(){ // Pas jojo
+      if (state.connexion == true){
+        navigation.navigate('Home');
+        console.log('connecté');
+        //getData();
+      }
+      else{
+        Alert.alert("Connexion","Nom d'utilisateur ou mot de passe incorrect ❌");
+      }
+    }, 1000);
+
   }
 
   function _register() {
@@ -64,6 +108,8 @@ export default function LoginScreen({ navigation }) {
         >
           <Text style={styles.textOublie}>Mot de passe oublié ?</Text>
         </TouchableOpacity>
+
+        <Text style={styles.textError}>{state.textError}</Text>
       </View>
       <View style={{flex : 2}}>
         <Text style={[styles.text]}>En utilisant GoStyle vous confirmez être en accord avec nos
@@ -74,6 +120,7 @@ export default function LoginScreen({ navigation }) {
 
         <TouchableOpacity
           style={[styles.textinput, styles.buttonValide]}
+          testID={'TestBtnConnexion'}
           onPress={() => _connexion()} >
           <Text style={styles.textButton}>Se connecter</Text>
         </TouchableOpacity>
@@ -143,6 +190,9 @@ const styles = StyleSheet.create({
   },
   textUnderLine : {
     textDecorationLine: 'underline',
+  },
+  textError: {
+    color: '#FE5A36',
   }
 
 })
