@@ -3,7 +3,9 @@ import { View, StyleSheet, Text } from "react-native";
 
 class DiscountItem extends React.Component {
     render(){
+        console.log(this.props.discount)
         const discount = this.props.discount
+        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
         return(
             <View style={styles.view}>
                 <View style={styles.viewHeader}>
@@ -14,7 +16,7 @@ class DiscountItem extends React.Component {
                     <Text style={styles.code}>Avec le code : {discount.code}</Text>
                 </View>
                 <View style={styles.viewFooter}>
-                    <Text style={styles.date}>Expire le {discount.expiration}</Text>
+                    <Text style={styles.date}>Expire le {discount.createdAt}</Text>
                 </View>
             </View>
         )
