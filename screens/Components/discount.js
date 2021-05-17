@@ -23,31 +23,15 @@ class Discount extends React.Component {
         })
     }
 
-    tqt = async () => {
-        try {
-            const response = await axios.get('http://192.168.0.13:8080/couponsUtilisateurs');
-            console.log(response.data);
-        } catch (err) {
-            console.error(err);
-        }
-    };
-
     UNSAFE_componentWillMount() {
-        console.log("bz ta mer")
+        this._loadDiscounts()
     }
-
     render() {
         return (
-
             <View style={styles.view}>
-                <Button
-                    title="Test API"
-                    onPress={() => this.tqt()}
-                />
                 <View style={styles.viewHeader}>
                     <Text style={styles.title}>Liste des réductions</Text>
                     <Button title="Déconnexion" onPress={() => this._logOut()}/>
-                    <Button title="Charger codes" onPress={() => this._loadDiscounts()}/>
                 </View>
                 <FlatList
                     data={this._tabDiscounts}

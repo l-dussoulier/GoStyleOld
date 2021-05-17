@@ -1,11 +1,13 @@
 import React from 'react'
 import { View, StyleSheet, Text } from "react-native";
+import Moment from 'moment';
 
 class DiscountItem extends React.Component {
     render(){
         console.log(this.props.discount)
         const discount = this.props.discount
-        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+        Moment.locale('fr');
+        var dt = discount.createdAt;
         return(
             <View style={styles.view}>
                 <View style={styles.viewHeader}>
@@ -16,7 +18,7 @@ class DiscountItem extends React.Component {
                     <Text style={styles.code}>Avec le code : {discount.code}</Text>
                 </View>
                 <View style={styles.viewFooter}>
-                    <Text style={styles.date}>Expire le {discount.createdAt}</Text>
+                    <Text style={styles.date}>Expire le {Moment(dt).subtract(10, 'days').calendar()}</Text>
                 </View>
             </View>
         )
@@ -26,10 +28,14 @@ class DiscountItem extends React.Component {
 const styles = StyleSheet.create({
     view:{
         height: 120,
-        flexDirection: 'column'
+        flexDirection: 'column',
+        borderTopWidth: 1,
+        borderBottomWidth: 1,
+        borderColor: 'black',
+        borderStyle: 'solid'
     },
     viewHeader:{
-        flex: 2
+        flex: 3
     },
     viewDescription:{
         flex: 7
