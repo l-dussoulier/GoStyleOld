@@ -1,17 +1,18 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import axios from 'axios';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StyleSheet,View,Button,TextInput,TouchableOpacity,Text, Alert} from "react-native";
 import Navigation from '../../navigation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Discount from "../Components/discount";
 
 // @ts-ignore
 export default function LoginScreen({ navigation }) {
 
 
+
   let state = {
-    adressRequest: 'http://192.168.0.13:8080',
+    adressRequest: 'http://192.168.1.78:8080',
     username: '',
     password: '',
     connexion: false,
@@ -27,18 +28,10 @@ export default function LoginScreen({ navigation }) {
     }
   }
 
-  const getData = async () => {
-    try {
-      const value = await AsyncStorage.getItem('@id')
-      if(value !== null) {
-        // value previously stored
-        console.log(value);
-        console.log("yets");
-      }
-    } catch(e) {
-      // error reading value
-      console.error(e);
-    }
+
+  function testZebi()  {
+    console.log("1");
+    return 1;
   }
 
 
@@ -62,7 +55,6 @@ export default function LoginScreen({ navigation }) {
     try {
       const response =  await axios.post(state.adressRequest+'/Login', {username: state.username, password: state.password});
       if (response.data != "Nom utilisateur ou mot de passe incorrect"){
-        //storeData(response.data.id);
         state.connexion = true;
 
       }
@@ -70,6 +62,7 @@ export default function LoginScreen({ navigation }) {
       console.error(err);
     }
   };
+
 
 
   function _connexion() {
@@ -99,6 +92,13 @@ export default function LoginScreen({ navigation }) {
     <View style={styles.main_container}>
       <Text style={styles.name}>GoStyle</Text>
       <View style={styles.viewInputs}>
+        <TouchableOpacity
+            style={[styles.textinput, styles.buttonValide]}
+            onPress={() => testZebi()} >
+          <Text >TDD</Text>
+        </TouchableOpacity>
+
+
         <Text style={styles.textLogin}>Adresse mail</Text>
         <TextInput onChangeText={(text) => _userLog(text)} style={styles.textinput} placeholder=''/>
         <Text style={styles.textLogin}>Mot de passe</Text>
@@ -106,7 +106,7 @@ export default function LoginScreen({ navigation }) {
         <TouchableOpacity
           onPress={_mdpOublie}
         >
-          <Text style={styles.textOublie}>Mot de passe oublié ?</Text>
+          <Text style={styles.textOublie}  >Mot de passe oublié ?</Text>
         </TouchableOpacity>
 
         <Text style={styles.textError}>{state.textError}</Text>
@@ -120,7 +120,6 @@ export default function LoginScreen({ navigation }) {
 
         <TouchableOpacity
           style={[styles.textinput, styles.buttonValide]}
-          testID={'TestBtnConnexion'}
           onPress={() => _connexion()} >
           <Text style={styles.textButton}>Se connecter</Text>
         </TouchableOpacity>
@@ -130,6 +129,7 @@ export default function LoginScreen({ navigation }) {
           onPress={() => _register()}>
           <Text style={styles.textButton}>S'inscire</Text>
         </TouchableOpacity>
+
 
       </View>
     </View>
